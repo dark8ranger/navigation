@@ -1,0 +1,1 @@
+{"name":"navigation","main":"dist/worker.mjs","compatibility_date":"2026-10-23","account_id":"d926f2435dbae6e7aae2755d94cd39b4","routes":[{"pattern":"navigation.maomaoshen.cc","custom_domain":true}],"observability":{"enabled":true},"build":{"command":"npm run build"}}

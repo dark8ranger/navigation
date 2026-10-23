@@ -1,0 +1,6 @@
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+const types={'index.html':'text/html; charset=utf-8','style.css':'text/css; charset=utf-8','app.js':'text/javascript; charset=utf-8','favicon.svg':'image/svg+xml'};
+const files={};for(const [name,type]of Object.entries(types))files['/'+name]={type,body:await readFile('public/'+name,'utf8')};
+await mkdir('dist',{recursive:true});
+await writeFile('dist/worker.mjs',`const files=${JSON.stringify(files)};\nexport default {fetch(request){const path=new URL(request.url).pathname;if(!['GET','HEAD'].includes(request.method))return new Response('Method Not Allowed',{status:405,headers:{Allow:'GET, HEAD'}});const file=files[path==='/'?'/index.html':path];if(!file)return new Response('Not Found',{status:404});return new Response(request.method==='HEAD'?null:file.body,{headers:{'content-type':file.type,'cache-control':'public, max-age=0, must-revalidate','x-content-type-options':'nosniff','referrer-policy':'strict-origin-when-cross-origin','content-security-policy':"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action https://www.google.com",'permissions-policy':'camera=(), microphone=(), geolocation=()'}})}};`);
+console.log('Built dist/worker.mjs');
